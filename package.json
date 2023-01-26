@@ -1,0 +1,26 @@
+{
+  "name": "cbp-js-scss-exercise",
+  "version": "1.0.0",
+  "description": "Boilerplate for JS/SCSS exercises in Coding Bootcamp Praha",
+  "main": "index.js",
+  "scripts": {
+    "create": "gulp structure",
+    "build": "gulp build_dev",
+    "build:prod": "gulp build_prod",
+    "publish": "gulp publish",
+    "watch": "gulp watch"
+  },
+  "author": "Coding Bootcamp Praha",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-csso": "^4.0.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "sass": "^1.49.0"
+  }
+}
