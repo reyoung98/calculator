@@ -24,6 +24,7 @@ const numBtns = document.querySelectorAll('.num-btn');
 let operation; // add, subtract, divide, multiply
 let currentNum = 0; // the user's current input
 let total; // the running total of all operations
+let numBtnClicked = false; // stores when a number button is clicked
 
 // what happens when any number button is pressed
 const inputNum = (num) => {
@@ -47,13 +48,14 @@ const operate = (operator, btnName) => {
     if (!operation) {       // no previous operation was done
         total = currentNum;
         currentNum = 0;
-    } else {                // for cases such as 4 + 5 + 7... the 'add' operator is already selected. First add 4 + 5, update total, then move on to add the 7.
+    } else if (operation && numBtnClicked) {                // for cases such as 4 + 5 + 7... the 'add' operator is already selected. First add 4 + 5, update total, then move on to add the 7.
         evaluate(operation);
         total = currentNum;
         currentNum = 0;
     }
 
     operation = `${operator}`;      // depending on which button we pressed, the name of that operation is stored (add, subtract...)
+    numBtnClicked = false;
 
     for (let calcBtn of calcBtns) {
         calcBtn.classList.remove('calc__btn-selected'); // remove pink background from any previous operations
@@ -125,6 +127,7 @@ numBtn0.addEventListener('click', () => { inputNum(0) });
 for (let numBtn of numBtns) {
     numBtn.addEventListener('click', () => {
         console.log("num button clicked!!!")
+        numBtnClicked = true;
     })
 }
 
@@ -185,6 +188,5 @@ document.addEventListener('keydown', (e) => {
         clear()
     }
 })
-
 
 
