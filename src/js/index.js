@@ -18,6 +18,7 @@ const numBtn7 = document.querySelector('#num7');
 const numBtn8 = document.querySelector('#num8');
 const numBtn9 = document.querySelector('#num9');
 const numBtn0 = document.querySelector('#num0');
+const numBtnFloat = document.querySelector('#float');
 const numBtns = document.querySelectorAll('.num-btn');
 
 // global variables for future use
@@ -30,14 +31,14 @@ let numBtnClicked = false; // stores when a number button is clicked
 const inputNum = (num) => {
     if (currentNum !== 0) {
         resultField.innerHTML += num;
-        currentNum = parseInt(resultField.innerHTML);
+        currentNum = Number(resultField.innerHTML);
         console.log(currentNum);
     } else {
         resultField.innerHTML = num;
-        currentNum = parseInt(resultField.innerHTML);
+        currentNum = Number(resultField.innerHTML);
     }
 
-    removeBackground()
+    unFocus()  // important not just for styling but also calculations - if you switch from numpad to keyboard and press Enter, need to unfocus numBtn or else will get extra digit appended
 }
 
 // Defining operation functions - parameters come from button event listeners below
@@ -46,7 +47,7 @@ const operate = (operator, btnName) => {
     if (!operation) {       // no previous operation was done
         total = currentNum;
         currentNum = 0;
-    } else if (operation && numBtnClicked) {                // for cases such as 4 + 5 + 7... the 'add' operator is already selected. First add 4 + 5, update total, then move on to add the 7.
+    } else if (operation && numBtnClicked) {  // for cases such as 4 + 5 + 7... the 'add' operator is already selected. First add 4 + 5, update total, then move on to add the 7.
         evaluate(operation);
         total = currentNum;
         currentNum = 0;
@@ -55,8 +56,8 @@ const operate = (operator, btnName) => {
     operation = `${operator}`;      // depending on which button we pressed, the name of that operation is stored (add, subtract...)
     numBtnClicked = false;
 
-    removeBackground() // remove pink background from any previous operations
-    btnName.classList.add('calc__btn-selected'); // add pink background to this operation
+    unFocus() 
+    btnName.classList.add('calc__btn-selected'); // add background to this operation
 }
 
 // Reset everything using the clear button
@@ -66,20 +67,22 @@ const clear = () => {
     total = 0;
     operation = null;
     inputField.value = 0;
-    removeBackground()
+    unFocus()
+    numBtnClicked = false;
 }
 
-// remove background on selected operator
-const removeBackground = () => {
+// remove background and focus from selected operator
+const unFocus = () => {
     for (let calcBtn of calcBtns) {
         calcBtn.classList.remove('calc__btn-selected');
+        calcBtn.blur();
     }
 }
 
 // what happens when you click the = sign
 const evaluate = () => {
 
-    currentNum = parseInt(resultField.innerHTML);
+    currentNum = Number(resultField.innerHTML);
 
     if (numBtnClicked) {
 
@@ -105,7 +108,8 @@ const evaluate = () => {
     }
 
     operation = null;
-    removeBackground()
+    numBtnClicked = false;
+    unFocus();
 }
 
 // Button event listeners: calling the operate function with different arguments
@@ -126,11 +130,13 @@ numBtn7.addEventListener('click', () => { inputNum(7) });
 numBtn8.addEventListener('click', () => { inputNum(8) });
 numBtn9.addEventListener('click', () => { inputNum(9) });
 numBtn0.addEventListener('click', () => { inputNum(0) });
+numBtnFloat.addEventListener('click', () => { inputNum('.')});
 
 for (let numBtn of numBtns) {
     numBtn.addEventListener('click', () => {
         console.log("num button clicked!!!")
         numBtnClicked = true;
+        numBtn.blur();
     })
 }
 
@@ -149,8 +155,16 @@ for (let num of nums) {
         if (e.key == num) {
             inputNum(num);
         }
+        numBtnClicked = true;
     })
 }
+
+document.addEventListener('keydown', (e) => {
+    if (e.key == '.' || e.key == ',') {
+        inputNum('.')
+    }
+    console.log(`operation: ${operation}`);
+})
 
 // Add event listeners for pressing the operator keys
 
@@ -179,8 +193,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 // pressing enter button runs evaluate function
-document.addEventListener('keydown', (e) => {       // This works, except if I **press a number key with the mouse first**, then click enter -- I get an extra num key press and a value appended on. Why?!?
-    if (e.key === "Enter") {
+document.addEventListener('keydown', (e) => { 
+    if (e.key == "Enter") {
         evaluate()
     }
 });
@@ -191,5 +205,4 @@ document.addEventListener('keydown', (e) => {
         clear()
     }
 })
-
 
