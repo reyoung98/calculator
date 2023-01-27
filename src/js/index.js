@@ -37,9 +37,7 @@ const inputNum = (num) => {
         currentNum = parseInt(resultField.innerHTML);
     }
 
-    for (let calcBtn of calcBtns) {
-        calcBtn.classList.remove('calc__btn-selected');
-    }
+    removeBackground()
 }
 
 // Defining operation functions - parameters come from button event listeners below
@@ -57,9 +55,7 @@ const operate = (operator, btnName) => {
     operation = `${operator}`;      // depending on which button we pressed, the name of that operation is stored (add, subtract...)
     numBtnClicked = false;
 
-    for (let calcBtn of calcBtns) {
-        calcBtn.classList.remove('calc__btn-selected'); // remove pink background from any previous operations
-    }
+    removeBackground() // remove pink background from any previous operations
     btnName.classList.add('calc__btn-selected'); // add pink background to this operation
 }
 
@@ -70,8 +66,11 @@ const clear = () => {
     total = 0;
     operation = null;
     inputField.value = 0;
+    removeBackground()
+}
 
-    // remove background on selected operator
+// remove background on selected operator
+const removeBackground = () => {
     for (let calcBtn of calcBtns) {
         calcBtn.classList.remove('calc__btn-selected');
     }
@@ -82,27 +81,31 @@ const evaluate = () => {
 
     currentNum = parseInt(resultField.innerHTML);
 
-    switch (operation) {
-        case "add":
-            total += currentNum;
-            break;
-        case "subtract":
-            total -= currentNum;
-            break;
-        case "multiply":
-            total *= currentNum;
-            break;
-        case "divide":
-            total /= currentNum;
-            break;
-        default:
-            total = currentNum;
+    if (numBtnClicked) {
+
+        switch (operation) {
+            case "add":
+                total += currentNum;
+                break;
+            case "subtract":
+                total -= currentNum;
+                break;
+            case "multiply":
+                total *= currentNum;
+                break;
+            case "divide":
+                total /= currentNum;
+                break;
+            default:
+                total = currentNum;
+        }
+
+        resultField.innerHTML = total;
+        currentNum = total;
     }
 
-    resultField.innerHTML = total;
-    currentNum = total;
-
     operation = null;
+    removeBackground()
 }
 
 // Button event listeners: calling the operate function with different arguments
